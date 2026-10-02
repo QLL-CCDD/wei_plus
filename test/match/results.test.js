@@ -1,7 +1,7 @@
 // RESULT: titles (评语) assignment, per-player rows, trophies, rewards.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { assignTitles } from '../../server/match/results.js';
+import { assignTitles, buildResult } from '../../server/match/results.js';
 import { GameData } from '../../server/match/gamedata.js';
 import { PHASE } from '../../shared/constants.js';
 import { DATA, makeMatch } from './harness.js';
@@ -60,7 +60,36 @@ test('m.result rows: lineup, bonds, stats, roundsPassed per player, trophies (co
   }
   assert.equal(rows.p_0.reward, Math.round(20 * 1.7 * 1.25), 'reward = base[rounds] × difficulty × mode');
   assert.equal(r.modeId, 'mode_multi_hard');
+  assert.equal(r.lastRound, m.gd.lastRound);
+  assert.equal(r.bossRound, m.gd.bossRound);
+  assert.equal(r.hiddenRound, m.gd.hiddenRound);
   assert.ok(Number.isFinite(r.durationMs));
+  m.dispose();
+});
+
+test('history settlement metadata is self-contained and reconnects retain the match identity and end time', () => {
+  const h = makeMatch({ mode: 'solo', difficulty: 'FUNNY', humans: 1, seed: 19, fake: true }).start();
+  h.toPrep(1);
+  const m = h.m;
+  const outcome = { victory: true, hiddenReached: false, hiddenCleared: false, reason: 'victory' };
+  const result = buildResult(m, outcome);
+  const again = buildResult(m, outcome);
+  assert.match(result.matchId, /^[0-9a-f-]{36}$/);
+  assert.equal(again.matchId, result.matchId);
+  assert.equal(again.endedAt, result.endedAt);
+  assert.ok(Number.isFinite(result.endedAt) && result.endedAt > 0);
+  assert.equal(result.lastRound, 9, 'saved solo FUNNY results do not fall back to the 14-round co-op UI');
+  assert.equal(result.bossRound, m.gd.bossRound);
+  assert.equal(result.hiddenRound, m.gd.hiddenRound);
+  assert.equal(result.rulesetId, 'current');
+  assert.equal(result.rulesetName, '卫戍协议：盟约');
+  for (const key of ['difficulty', 'modeId', 'stageId', 'bossId', 'hiddenBossId', 'seed', 'durationMs', 'teamLp', 'players']) {
+    assert.ok(Object.hasOwn(result, key), `saved result contains ${key}`);
+  }
+  const restored = JSON.parse(JSON.stringify(result));
+  assert.deepEqual(restored.players, result.players, 'the complete roster survives JSON persistence');
+  assert.equal(restored.players[0].name, h.ps('p_0').name);
+  assert.equal(restored.players[0].bandId, h.ps('p_0').bandId);
   m.dispose();
 });
 

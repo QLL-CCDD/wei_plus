@@ -214,7 +214,11 @@ function wireNet() {
   net.on('m.field', (msg) => store.patch('match', { field: payload(msg) }));
   net.on('m.result', (msg) => {
     store.patch('match', { result: payload(msg) });
-    try { if (recordResult(msg, store.get().me.playerId)) window.dispatchEvent(new Event('sp-records-updated')); }
+    try {
+      const context = { m: data.get('assets'), chess: (id) => data.lookup('chess', id), band: (id) => data.lookup('bands', id),
+        bond: (id) => data.lookup('bonds', id), boss: (id) => data.lookup('bosses', id) };
+      if (recordResult(msg, store.get().me.playerId, globalThis.localStorage, context)) window.dispatchEvent(new Event('sp-records-updated'));
+    }
     catch (err) { toast(`战绩未保存：${err.message}，请检查浏览器存储空间`, 'warn', { ttl: 8000 }); }
   });
   net.on('m.toast', (msg) => {

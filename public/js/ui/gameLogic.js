@@ -1302,6 +1302,7 @@ export function normalizeResult(res, pub) {
       lp: teamLp != null ? (alive === false ? 0 : Math.max(0, teamLp)) : ownLp,
       lpShared: teamLp != null,
       bandId: p.bandId ?? pp.bandId ?? null,
+      bandName: p.bandName || null,
       roundsPassed: Number.isFinite(p.roundsPassed) ? p.roundsPassed : (Number.isFinite(r.roundsPassed) ? r.roundsPassed : 0),
       title,
       lineup: (Array.isArray(p.lineup) ? p.lineup : Array.isArray(p.board) ? p.board : []).filter(isObj).slice(0, 12),
