@@ -1,0 +1,409 @@
+{
+  "source": "Stronghold-Protocol v0.1.0 current data",
+  "bands": {
+    "band_lisa": {
+      "bandId": "band_lisa",
+      "sortId": 30,
+      "name": "铃兰",
+      "iconId": "icon_lisa",
+      "modeTypeList": [
+        "SINGLE",
+        "MULTI"
+      ],
+      "totalHp": 20,
+      "effectId": "aceffect_band_51",
+      "effectName": "御守之力",
+      "desc": "【御守之力】每个回合开始时，触发战场上一名干员的获得时效果一次（优先选择最靠右和最靠下）",
+      "descRaw": "【御守之力】每个回合开始时，触发战场上一名干员的获得时效果一次（优先选择最靠右和最靠下）",
+      "buffs": [
+        {
+          "key": "round_start_activate_char_chess_effect_in_board",
+          "bb": {
+            "count": 1
+          },
+          "bbStr": {
+            "event_type": "SERVER_GAIN"
+          }
+        }
+      ],
+      "params": {
+        "count": 1,
+        "event_type": "SERVER_GAIN"
+      },
+      "victorCount": 3,
+      "rewardModulus": 1,
+      "unlockDesc": null
+    },
+    "band_jesica": {
+      "bandId": "band_jesica",
+      "sortId": 33,
+      "name": "杰西卡",
+      "iconId": "icon_jesica",
+      "modeTypeList": [
+        "SINGLE",
+        "MULTI"
+      ],
+      "totalHp": 22,
+      "effectId": "aceffect_band_54",
+      "effectName": "集结指示",
+      "desc": "【集结指示】在第4、7、10、13回合进入休整期时获得1个<寻呼模块>\n<寻呼模块>：装备时销毁，立即在调度中心中刷新三名与该干员盟约相同的干员，免费获得其中一名!（不超过当前调度中心等级）",
+      "descRaw": "【集结指示】在第4、7、10、13回合进入休整期时获得1个<寻呼模块>\n<@ba.acrem><寻呼模块>：装备时销毁，立即在调度中心中刷新三名与该干员盟约相同的干员，免费获得其中一名!（不超过当前调度中心等级）</>",
+      "buffs": [
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 4,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 7,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 10,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 13,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        }
+      ],
+      "params": {
+        "round": 4,
+        "count": 1,
+        "type": "equip",
+        "chess": "chess_item_4_01_e_a"
+      },
+      "victorCount": 3,
+      "rewardModulus": 1,
+      "unlockDesc": "通关任意模拟1次解锁"
+    },
+    "band_mlyss": {
+      "bandId": "band_mlyss",
+      "sortId": 34,
+      "name": "缪尔赛思",
+      "iconId": "icon_mlyss",
+      "modeTypeList": [
+        "SINGLE",
+        "MULTI"
+      ],
+      "totalHp": 28,
+      "effectId": "aceffect_band_55",
+      "effectName": "至纯凝结",
+      "desc": "【至纯凝结】在第1回合开始时获得一个进阶<博士投影>\n进阶<博士投影>：任意干员可装备，立即使该干员晋升为精锐干员",
+      "descRaw": "【至纯凝结】在第1回合开始时获得一个进阶<博士投影>\n<@ba.acrem>进阶<博士投影>：任意干员可装备，立即使该干员晋升为精锐干员</>",
+      "buffs": [
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 1,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_06_e_b"
+          }
+        }
+      ],
+      "params": {
+        "round": 1,
+        "count": 1,
+        "type": "equip",
+        "chess": "chess_item_5_06_e_b"
+      },
+      "victorCount": 3,
+      "rewardModulus": 1,
+      "unlockDesc": "通关任意模拟1次解锁"
+    },
+    "band_fang": {
+      "bandId": "band_fang",
+      "sortId": 36,
+      "name": "芬",
+      "iconId": "icon_fang",
+      "modeTypeList": [
+        "SINGLE",
+        "MULTI"
+      ],
+      "totalHp": 24,
+      "effectId": "aceffect_band_57",
+      "effectName": "协力共进",
+      "desc": "【协力共进】第8、10、12、14回合时，获得1个<信标>\n<信标>：装备后销毁携带干员，并在调度中心刷新两名同等阶干员免费获取其中一名；原干员在下回合传递给对应盟约人数最多的队友",
+      "descRaw": "【协力共进】第8、10、12、14回合时，获得1个<信标>\n<@ba.acrem><信标>：装备后销毁携带干员，并在调度中心刷新两名同等阶干员免费获取其中一名；原干员在下回合传递给对应盟约人数最多的队友</>",
+      "buffs": [
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 8,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 10,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 12,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "bb": {
+            "round": 14,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        }
+      ],
+      "params": {
+        "round": 8,
+        "count": 1,
+        "type": "equip",
+        "chess": "chess_item_5_04_e_a"
+      },
+      "victorCount": 3,
+      "rewardModulus": 1,
+      "unlockDesc": "通关任意模拟3次解锁"
+    }
+  },
+  "effects": {
+    "aceffect_band_51": {
+      "effectId": "aceffect_band_51",
+      "effectType": "BAND_INITIAL",
+      "name": "御守之力",
+      "desc": "【御守之力】每个回合开始时，触发战场上一名干员的获得时效果一次（优先选择最靠右和最靠下）",
+      "descRaw": "【御守之力】每个回合开始时，触发战场上一名干员的获得时效果一次（优先选择最靠右和最靠下）",
+      "counterType": "NONE",
+      "continuedRound": -1,
+      "decoIconId": null,
+      "enemyPrice": 0,
+      "buffs": [
+        {
+          "key": "round_start_activate_char_chess_effect_in_board",
+          "countType": "NONE",
+          "bb": {
+            "count": 1
+          },
+          "bbStr": {
+            "event_type": "SERVER_GAIN"
+          }
+        }
+      ],
+      "params": {
+        "count": 1,
+        "event_type": "SERVER_GAIN"
+      }
+    },
+    "aceffect_band_54": {
+      "effectId": "aceffect_band_54",
+      "effectType": "BAND_INITIAL",
+      "name": "集结指示",
+      "desc": "【集结指示】在第4、7、10、13回合进入休整期时获得1个<寻呼模块>\n<寻呼模块>：装备时销毁，立即在调度中心中刷新三名与该干员盟约相同的干员，免费获得其中一名!（不超过当前调度中心等级）",
+      "descRaw": "【集结指示】在第4、7、10、13回合进入休整期时获得1个<寻呼模块>\n<@ba.acrem><寻呼模块>：装备时销毁，立即在调度中心中刷新三名与该干员盟约相同的干员，免费获得其中一名!（不超过当前调度中心等级）</>",
+      "counterType": "NONE",
+      "continuedRound": -1,
+      "decoIconId": null,
+      "enemyPrice": 0,
+      "buffs": [
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 4,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 7,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 10,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 13,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_4_01_e_a"
+          }
+        }
+      ],
+      "params": {
+        "round": 4,
+        "count": 1,
+        "type": "equip",
+        "chess": "chess_item_4_01_e_a"
+      }
+    },
+    "aceffect_band_55": {
+      "effectId": "aceffect_band_55",
+      "effectType": "BAND_INITIAL",
+      "name": "至纯凝结",
+      "desc": "【至纯凝结】在第1回合开始时获得一个进阶<博士投影>\n进阶<博士投影>：任意干员可装备，立即使该干员晋升为精锐干员",
+      "descRaw": "【至纯凝结】在第1回合开始时获得一个进阶<博士投影>\n<@ba.acrem>进阶<博士投影>：任意干员可装备，立即使该干员晋升为精锐干员</>",
+      "counterType": "NONE",
+      "continuedRound": -1,
+      "decoIconId": null,
+      "enemyPrice": 0,
+      "buffs": [
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 1,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_06_e_b"
+          }
+        }
+      ],
+      "params": {
+        "round": 1,
+        "count": 1,
+        "type": "equip",
+        "chess": "chess_item_5_06_e_b"
+      }
+    },
+    "aceffect_band_57": {
+      "effectId": "aceffect_band_57",
+      "effectType": "BAND_INITIAL",
+      "name": "协力共进",
+      "desc": "【协力共进】第8、10、12、14回合时，获得1个<信标>\n<信标>：装备后销毁携带干员，并在调度中心刷新两名同等阶干员免费获取其中一名；原干员在下回合传递给对应盟约人数最多的队友",
+      "descRaw": "【协力共进】第8、10、12、14回合时，获得1个<信标>\n<@ba.acrem><信标>：装备后销毁携带干员，并在调度中心刷新两名同等阶干员免费获取其中一名；原干员在下回合传递给对应盟约人数最多的队友</>",
+      "counterType": "NONE",
+      "continuedRound": -1,
+      "decoIconId": null,
+      "enemyPrice": 0,
+      "buffs": [
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 8,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 10,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 12,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        },
+        {
+          "key": "preparation_start_gain_chess_from_round",
+          "countType": "NONE",
+          "bb": {
+            "round": 14,
+            "count": 1
+          },
+          "bbStr": {
+            "type": "equip",
+            "chess": "chess_item_5_04_e_a"
+          }
+        }
+      ],
+      "params": {
+        "round": 8,
+        "count": 1,
+        "type": "equip",
+        "chess": "chess_item_5_04_e_a"
+      }
+    }
+  }
+}

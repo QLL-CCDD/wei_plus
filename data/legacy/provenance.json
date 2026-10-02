@@ -1,0 +1,15 @@
+{
+  "ruleset": "legacy",
+  "baseline": "2026-03-27 更新前的二期下半",
+  "sourceCommit": "987b4cd5d89fadc540c88deae222df0c088c4ee3",
+  "sourceDate": "2026-03-17",
+  "officialNotice": "https://ak.hypergryph.com/news/8584",
+  "source": "https://github.com/Kengxxiao/ArknightsGameData/tree/987b4cd5d89fadc540c88deae222df0c088c4ee3/zh_CN/gamedata",
+  "extraStrategies": [
+    "铃兰",
+    "杰西卡",
+    "缪尔赛思",
+    "芬"
+  ],
+  "scope": "Historical client data plus four newer strategies; shared fan-game engine with current bug fixes. Not an original client rollback."
+}

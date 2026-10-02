@@ -1,0 +1,536 @@
+{
+  "beforeCommit": "987b4cd5d89fadc540c88deae222df0c088c4ee3",
+  "afterCommit": "86b6e749d3384dd0c7b825abbb795845dc6df933",
+  "operators": [
+    {
+      "name": "红豆",
+      "oldTier": 1,
+      "newTier": 1,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "indomShip"
+      ],
+      "newBonds": [
+        "indomShip"
+      ]
+    },
+    {
+      "name": "刺玫",
+      "oldTier": 1,
+      "newTier": 1,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "victoriaShip",
+        "deputShip"
+      ],
+      "newBonds": [
+        "victoriaShip",
+        "deputShip"
+      ]
+    },
+    {
+      "name": "地灵",
+      "oldTier": 1,
+      "newTier": 1,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "miraShip",
+        "visiShip"
+      ],
+      "newBonds": [
+        "miraShip",
+        "visiShip"
+      ]
+    },
+    {
+      "name": "锡人",
+      "oldTier": 1,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "investShip"
+      ],
+      "newBonds": [
+        "investShip",
+        "swiftShip"
+      ]
+    },
+    {
+      "name": "送葬人",
+      "oldTier": 2,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "lateranoShip",
+        "preciShip"
+      ],
+      "newBonds": [
+        "lateranoShip",
+        "preciShip"
+      ]
+    },
+    {
+      "name": "崖心",
+      "oldTier": 2,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "kjeragShip",
+        "indomShip"
+      ],
+      "newBonds": [
+        "kjeragShip",
+        "indomShip"
+      ]
+    },
+    {
+      "name": "莎草",
+      "oldTier": 2,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "sargonShip"
+      ],
+      "newBonds": [
+        "sargonShip"
+      ]
+    },
+    {
+      "name": "调香师",
+      "oldTier": 2,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "deputShip"
+      ],
+      "newBonds": [
+        "deputShip",
+        "emptyShip"
+      ]
+    },
+    {
+      "name": "协律",
+      "oldTier": 2,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "arcaneShip",
+        "deputShip"
+      ],
+      "newBonds": [
+        "arcaneShip",
+        "deputShip"
+      ]
+    },
+    {
+      "name": "拉普兰德",
+      "oldTier": 2,
+      "newTier": 2,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "siracusaShip"
+      ],
+      "newBonds": [
+        "siracusaShip"
+      ]
+    },
+    {
+      "name": "断崖",
+      "oldTier": 3,
+      "newTier": 3,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "skillfulShip"
+      ],
+      "newBonds": [
+        "skillfulShip"
+      ]
+    },
+    {
+      "name": "菲莱",
+      "oldTier": 3,
+      "newTier": 3,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "sargonShip"
+      ],
+      "newBonds": [
+        "sargonShip"
+      ]
+    },
+    {
+      "name": "见行者",
+      "oldTier": 3,
+      "newTier": 3,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "lateranoShip"
+      ],
+      "newBonds": [
+        "lateranoShip"
+      ]
+    },
+    {
+      "name": "初雪",
+      "oldTier": 3,
+      "newTier": 3,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "kjeragShip",
+        "visiShip"
+      ],
+      "newBonds": [
+        "kjeragShip",
+        "visiShip"
+      ]
+    },
+    {
+      "name": "巫恋",
+      "oldTier": 3,
+      "newTier": 3,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "siracusaShip",
+        "deputShip"
+      ],
+      "newBonds": [
+        "siracusaShip",
+        "deputShip"
+      ]
+    },
+    {
+      "name": "耶拉",
+      "oldTier": 4,
+      "newTier": 3,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "kjeragShip",
+        "deputShip"
+      ],
+      "newBonds": [
+        "kjeragShip",
+        "deputShip"
+      ]
+    },
+    {
+      "name": "伊内丝",
+      "oldTier": 4,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "visiShip",
+        "raidShip"
+      ],
+      "newBonds": [
+        "visiShip",
+        "raidShip"
+      ]
+    },
+    {
+      "name": "蜜蜡",
+      "oldTier": 4,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "sargonShip",
+        "deputShip"
+      ],
+      "newBonds": [
+        "sargonShip",
+        "deputShip"
+      ]
+    },
+    {
+      "name": "瑰盐",
+      "oldTier": 4,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": false,
+      "oldBonds": [
+        "emptyShip"
+      ],
+      "newBonds": [
+        "emptyShip"
+      ]
+    },
+    {
+      "name": "莱恩哈特",
+      "oldTier": 4,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "swiftShip",
+        "preciShip"
+      ],
+      "newBonds": [
+        "swiftShip",
+        "preciShip"
+      ]
+    },
+    {
+      "name": "录武官",
+      "oldTier": 4,
+      "newTier": 5,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "yanShip",
+        "miraShip"
+      ],
+      "newBonds": [
+        "yanShip",
+        "miraShip"
+      ]
+    },
+    {
+      "name": "华法琳",
+      "oldTier": 5,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "miraShip"
+      ],
+      "newBonds": [
+        "miraShip"
+      ]
+    },
+    {
+      "name": "魔王",
+      "oldTier": 5,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "miraShip",
+        "emptyShip"
+      ],
+      "newBonds": [
+        "emptyShip"
+      ]
+    },
+    {
+      "name": "归溟幽灵鲨",
+      "oldTier": 5,
+      "newTier": 5,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "egirShip",
+        "indomShip"
+      ],
+      "newBonds": [
+        "egirShip",
+        "indomShip"
+      ]
+    },
+    {
+      "name": "凛御银灰",
+      "oldTier": 5,
+      "newTier": 5,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "kjeragShip",
+        "investShip",
+        "swiftShip"
+      ],
+      "newBonds": [
+        "kjeragShip",
+        "investShip",
+        "swiftShip"
+      ]
+    },
+    {
+      "name": "白面鸮",
+      "oldTier": 5,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "deputShip",
+        "skillfulShip"
+      ],
+      "newBonds": [
+        "deputShip",
+        "skillfulShip"
+      ]
+    },
+    {
+      "name": "百炼嘉维尔",
+      "oldTier": 5,
+      "newTier": 4,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "sargonShip"
+      ],
+      "newBonds": [
+        "sargonShip"
+      ]
+    },
+    {
+      "name": "异客",
+      "oldTier": 6,
+      "newTier": 6,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "sargonShip",
+        "swiftShip",
+        "soloShip"
+      ],
+      "newBonds": [
+        "sargonShip",
+        "swiftShip",
+        "preciShip"
+      ]
+    },
+    {
+      "name": "维娜·维多利亚",
+      "oldTier": 6,
+      "newTier": 6,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "victoriaShip",
+        "miraShip"
+      ],
+      "newBonds": [
+        "victoriaShip",
+        "miraShip"
+      ]
+    },
+    {
+      "name": "妮芙",
+      "oldTier": 6,
+      "newTier": 5,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "swiftShip"
+      ],
+      "newBonds": [
+        "swiftShip"
+      ]
+    },
+    {
+      "name": "耀骑士临光",
+      "oldTier": 6,
+      "newTier": 6,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "kazimierzShip",
+        "raidShip"
+      ],
+      "newBonds": [
+        "kazimierzShip",
+        "raidShip"
+      ]
+    },
+    {
+      "name": "锏",
+      "oldTier": 6,
+      "newTier": 6,
+      "oldVisible": true,
+      "newVisible": true,
+      "oldBonds": [
+        "kjeragShip",
+        "kazimierzShip",
+        "swiftShip"
+      ],
+      "newBonds": [
+        "kjeragShip",
+        "kazimierzShip",
+        "swiftShip"
+      ]
+    },
+    {
+      "name": "雷蛇",
+      "oldTier": null,
+      "newTier": 1,
+      "oldVisible": false,
+      "newVisible": true,
+      "oldBonds": [],
+      "newBonds": [
+        "indomShip"
+      ]
+    },
+    {
+      "name": "伺夜",
+      "oldTier": null,
+      "newTier": 3,
+      "oldVisible": false,
+      "newVisible": true,
+      "oldBonds": [],
+      "newBonds": [
+        "siracusaShip",
+        "miraShip"
+      ]
+    },
+    {
+      "name": "空弦",
+      "oldTier": null,
+      "newTier": 3,
+      "oldVisible": false,
+      "newVisible": true,
+      "oldBonds": [],
+      "newBonds": [
+        "lateranoShip",
+        "skillfulShip"
+      ]
+    },
+    {
+      "name": "银灰",
+      "oldTier": null,
+      "newTier": 4,
+      "oldVisible": false,
+      "newVisible": true,
+      "oldBonds": [],
+      "newBonds": [
+        "kjeragShip"
+      ]
+    },
+    {
+      "name": "卡涅利安",
+      "oldTier": null,
+      "newTier": 4,
+      "oldVisible": false,
+      "newVisible": true,
+      "oldBonds": [],
+      "newBonds": [
+        "sargonShip",
+        "deputShip"
+      ]
+    }
+  ],
+  "bugfix": [
+    "仇白"
+  ],
+  "extraStrategiesKept": [
+    "铃兰",
+    "杰西卡",
+    "缪尔赛思",
+    "芬"
+  ]
+}
