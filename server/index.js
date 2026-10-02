@@ -39,9 +39,11 @@ import { Network, SessionRegistry, NET_DEFAULTS } from './net.js';
 import { Lobby } from './lobby.js';
 import { getData, loadData } from './data.js';
 import { PROTOCOL_VERSION, APP_VERSION } from '../shared/constants.js';
+import { SERVER_FAMILY, getInstanceIdentity, normalizeAlternateUrl } from './instance.js';
 
 /** Repository root. */
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const INSTANCE = getInstanceIdentity(ROOT);
 
 /** Inbound WebSocket frame limit (DESIGN §8). */
 export const WS_MAX_PAYLOAD = 64 * 1024;
@@ -460,6 +462,24 @@ export function lanUrls(port) {
   return out;
 }
 
+/** Actual LAN origins suitable for an invite opened on a different computer. */
+export function localOrigins(port, ifaces = os.networkInterfaces()) {
+  const candidates = [];
+  for (const [name, addrs] of Object.entries(ifaces)) for (const a of addrs || []) {
+    if (!(a.family === 'IPv4' || a.family === 4) || a.internal) continue;
+    const address = a.address;
+    if (!/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(address)) continue;
+    const virtual = /(virtual|vmware|vmnet|vethernet|wsl|docker|vbox|loopback)/i.test(name);
+    const rank = (virtual ? 10 : 0) + (/^(wlan|wi-?fi|无线)/i.test(name) ? -3 : 0) + (address.startsWith('192.168.') ? 0 : address.startsWith('10.') ? 1 : 2);
+    candidates.push({ rank, origin: `http://${address}:${port}` });
+  }
+  return [...new Set(candidates.sort((a, b) => a.rank - b.rank).map((a) => a.origin))];
+}
+
+export function alternateUrl(value = process.env.SP_ALTERNATE_URL) {
+  return normalizeAlternateUrl(value);
+}
+
 /** TRUST_PROXY env → net.js trustProxy ('auto' unless explicitly on/off). @param {string | undefined} v */
 export function parseTrustProxy(v) {
   const s = String(v ?? '').trim().toLowerCase();
@@ -541,6 +561,10 @@ export async function startServer(opts = {}) {
     if (parts.rawPath === '/healthz') {
       sendJson(req, res, 200, {
         ok: true, version: PROTOCOL_VERSION, app: APP_VERSION, uptimeSec: Math.round((Date.now() - startedAt) / 1000),
+        family: SERVER_FAMILY, instance: INSTANCE,
+        alternatePort: process.env.SP_ALTERNATE_PORT ? Number(process.env.SP_ALTERNATE_PORT) : null,
+        alternateUrl: alternateUrl(),
+        bindHost: host,
         ruleset: data.config?.ruleset?.id || 'current',
         sockets: network.connectionCount, sessions: registry.size, ...lobby.stats(),
       });
@@ -552,6 +576,8 @@ export async function startServer(opts = {}) {
         id: legacy ? 'legacy' : 'current', name: legacy ? '卫戍协议旧版' : '卫戍协议：盟约',
         baseline: legacy ? '2026-03-27 更新前' : '当前版',
         alternatePort: process.env.SP_ALTERNATE_PORT ? Number(process.env.SP_ALTERNATE_PORT) : null,
+        port: server.address().port, alternateUrl: alternateUrl(),
+        localOrigins: localOrigins(server.address().port).filter((origin) => ['0.0.0.0', '::'].includes(host) || new URL(origin).hostname === host),
       });
       return;
     }
@@ -604,7 +630,8 @@ export async function startServer(opts = {}) {
 
   const addr = server.address();
   const actualPort = typeof addr === 'object' && addr ? addr.port : port;
-  const url = `http://${host === '0.0.0.0' || host === '::' ? 'localhost' : host}:${actualPort}`;
+  const displayHost = host === '0.0.0.0' || host === '::' ? 'localhost' : host.includes(':') ? `[${host}]` : host;
+  const url = `http://${displayHost}:${actualPort}`;
 
   let closing = null;
   async function close() {

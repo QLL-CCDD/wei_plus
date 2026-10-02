@@ -14,6 +14,8 @@ npm run start:plus
 
 可选参数：`npm run start:plus -- --no-open` 不打开浏览器；`--port 4000 --legacy-port 4001` 更换两个端口；`--no-local` 跳过本机客户端美术提取。局域网联机需要允许两个端口通过防火墙。
 
+更新后请先停止正在运行的服务，再重新启动。启动器会核对仓库目录、代码、规则和监听配置，遇到旧原版或其他服务占用端口时会提示；不会自动结束它们。朋友安装过原版时，可把本仓库放在新文件夹中，再停止原版或换用其他端口。
+
 **战绩与备份：**大厅的战绩入口显示总局数、胜场、奖杯、各盟约与策略胜场及逐条对战历史。每条记录可「查看完整结算」，回看所有同盟成员（含 AI）的阵容头像、盟约层数、伤害、领袖、评语和奖励；查看历史或返回列表不会退出当前对局。可导出/导入 JSON 备份。记录保存在当前浏览器的 `localStorage`（键 `sp.records.v1`），按稳定的模式 ID 分开统计；更新仓库、重新安装依赖或以后增加一期模式不会清零现有记录。当前版与旧版使用不同端口，属于不同浏览器存储空间。更换浏览器、网址或端口，以及清理浏览器数据前，请先导出备份，之后再导入恢复或合并。战绩从此功能启用后开始记录，原程序未保存的历史无法补回；早期简要记录保留原有统计，可查看已保存的本人信息。
 
 旧版规则、改动名录与验证说明见 [docs/LEGACY.md](docs/LEGACY.md)。下面保留上游的使用说明。
@@ -139,7 +141,19 @@ npm run start:plus # 自动安装依赖、下载素材、启动当前版 3000 / 
 3. 所有人点「准备就绪」后房主开始。
 4. 同一 Wi-Fi / 路由器下的朋友打开启动窗口里列出的地址（形如 `http://192.168.x.x:3000`）即可。打不开时多半是防火墙：Windows 首次启动时在弹窗中允许「专用网络」，或运行 `npm run doctor` 查看具体命令；访客 Wi-Fi 常开启「AP 隔离」，也会导致连不上。
 
+联机时所有人必须连接**同一台开服电脑、同一个版本**。朋友只需要浏览器；每个人各自启动本机服务，房间不会互通。房主从 localhost 页面复制邀请时，会优先使用该服务器的局域网地址，并保留当前版/旧版端口。局域网链接只适合同一网络；异地联机需要公网入口或组网地址。
+
+使用反向代理或公网隧道时，从对外网址进入后再复制邀请。两个版本要分别配置可访问的入口：双版启动器使用 `SP_CURRENT_ALTERNATE_URL` 指向旧版网址、`SP_LEGACY_ALTERNATE_URL` 指向当前版网址；分别启动单个服务器时，使用 `SP_ALTERNATE_URL` 指向另一版本的完整 HTTP(S) 网址。修改入口配置后先停止服务再启动。未配置且外部端口不同于游戏端口时，页面会提示使用另一入口，避免把内部 3000/3001 端口拼到隧道网址上。
+
 刷新页面或断线后，同盟模拟 10 分钟内、独立模拟 24 小时内重新打开即可回到原座位。服务器把房间和对局都保存在内存里，**重启服务器会结束所有对局**。
+
+Windows 可在项目文件夹的 PowerShell 中运行以下命令，**默认仅诊断和预览，不修改防火墙**：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\repair-local-network.ps1
+```
+
+确认预览后，手动打开**管理员 PowerShell**，进入项目文件夹，再执行 `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\repair-local-network.ps1 -Apply`。脚本只为本项目使用的 Node 放行 TCP **3000、3001**，访问范围限制为 `LocalSubnet`；从匹配的 TCP 阻止规则中去除这两个端口，保留其他端口的阻止，规则仅包含游戏端口时才禁用。UDP、其他程序规则和网络类别保持原样。Windows 的显式阻止规则优先于允许规则，详见 [Microsoft 文档](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/rules)。修改前的设置备份到 `.local/network-firewall-backup-*.json`；在管理员 PowerShell 中执行相同命令加 `-Restore` 可恢复最近一次备份。
 
 ## 联机方式
 

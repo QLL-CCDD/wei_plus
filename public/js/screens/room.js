@@ -19,6 +19,7 @@ import { net } from '../net.js';
 import { store, useStore, shallowEqual, emptyMatch } from '../store.js';
 import { difficultyInfo } from './lobby.js';
 import { availableDifficulties } from '../ruleset.js';
+import { isLoopbackHost, shareableInviteLink } from '../multiplayerLinks.js';
 
 /**
  * Seats padded to the room's capacity (co-op 4, solo 1), each null or a seat record.
@@ -62,10 +63,10 @@ export function roomFacts(room, myId) {
 }
 
 /** Invite link for a room code (current page URL with ?room=CODE). */
-export function inviteLink(code) {
+export function inviteLink(code, localOrigins = []) {
   const loc = globalThis.location;
-  const base = loc ? `${loc.origin}${loc.pathname}` : '';
-  return `${base}?room=${encodeURIComponent(code)}`;
+  const href = loc?.href || (loc ? `${loc.origin}${loc.pathname}` : '');
+  return shareableInviteLink(code, href, localOrigins);
 }
 
 /**
@@ -154,9 +155,26 @@ function SeatCard({ seat, index, room, facts, myId, busy, onAddBot, onRemoveBot 
 }
 
 function InviteBox({ code }) {
+  const [origins, setOrigins] = useState([]);
+  const loopback = isLoopbackHost(globalThis.location?.hostname);
+  useEffect(() => {
+    if (!loopback) return undefined;
+    let alive = true;
+    fetch('/ruleset').then((r) => r.ok ? r.json() : null).then((info) => {
+      if (alive && Array.isArray(info?.localOrigins)) setOrigins(info.localOrigins);
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [loopback]);
   const copy = async (what) => {
-    const ok = await copyText(what === 'code' ? code : inviteLink(code));
-    if (ok) toast(what === 'code' ? `已复制同盟密钥 ${code}` : '已复制邀请链接', 'success');
+    let localOrigins = origins;
+    if (what === 'link' && loopback && !localOrigins.length) {
+      try { const r = await fetch('/ruleset'); if (r.ok) localOrigins = (await r.json()).localOrigins || []; } catch { /* show actionable notice */ }
+    }
+    if (what === 'link' && loopback && !localOrigins.length) {
+      toast('未找到局域网地址，请先用启动窗口里的 LAN 地址打开游戏，再复制邀请链接', 'warn'); return;
+    }
+    const ok = await copyText(what === 'code' ? code : inviteLink(code, localOrigins));
+    if (ok) toast(what === 'code' ? `已复制同盟密钥 ${code}` : loopback ? '已复制局域网邀请链接（同一网络的朋友可用）' : '已复制邀请链接', 'success');
     else toast('复制失败，请手动复制', 'warn');
   };
   return html`<div class="invite brackets">
@@ -166,6 +184,7 @@ function InviteBox({ code }) {
       <${Button} size="sm" icon="copy" onClick=${() => copy('code')}>复制密钥<//>
       <${Button} size="sm" icon="link" onClick=${() => copy('link')}>复制链接<//>
     </div>
+    ${loopback ? html`<p class="t-lo" style="font-size:max(.13rem,11px);margin-top:.08rem">${origins.length ? `同一局域网的朋友访问 ${origins[0]}，再输入密钥。异地联机请使用公网或组网地址。` : '同一局域网的朋友需要连接启动窗口中的 LAN 地址。'}</p>` : null}
   </div>`;
 }
 

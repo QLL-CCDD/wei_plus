@@ -26,13 +26,33 @@ $env:HOST = '0.0.0.0'
 $env:SP_COMBAT = 'client'
 $env:SP_VERIFY = 'off'
 $env:TRUST_PROXY = 'auto'
+$expectedInstance = (& $nodeExe (Join-Path $gameRoot 'tools\instance-id.mjs')) | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) { throw 'Unable to identify this wei_plus checkout.' }
+$alternateUrls = (& $nodeExe (Join-Path $gameRoot 'tools\instance-id.mjs') --alternate-urls) | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) { throw 'Unable to read alternate version URLs.' }
+if ($env:SP_ALTERNATE_URL) { Write-Warning 'For dual-version launch use SP_CURRENT_ALTERNATE_URL / SP_LEGACY_ALTERNATE_URL. Shared SP_ALTERNATE_URL is ignored.' }
 
-function Get-GameHealth($profile) {
+function Get-AnyGameHealth($profile) {
   try {
     $health = Invoke-RestMethod -Uri "http://127.0.0.1:$($profile.Port)/healthz" -TimeoutSec 2
-    if ($health.ok -eq $true -and $health.app -eq '0.1.0' -and (($health.ruleset -eq $profile.Id) -or (-not $health.ruleset -and $profile.Id -eq 'current'))) { return $health }
+    if ($health.ok -eq $true) { return $health }
   } catch { }
   return $null
+}
+function Get-GameHealth($profile) {
+  $health = Get-AnyGameHealth $profile
+  $desiredAlternateUrl = $alternateUrls.($profile.Id)
+  if ($health -and $health.family -eq 'wei_plus' -and $health.ruleset -eq $profile.Id -and $health.alternatePort -eq $profile.OtherPort -and $health.bindHost -eq '0.0.0.0' -and
+      $health.alternateUrl -eq $desiredAlternateUrl -and
+      $health.instance.workspace -eq $expectedInstance.workspace -and $health.instance.revision -eq $expectedInstance.revision) { return $health }
+  return $null
+}
+function Test-OwnedServerProcess($process, $expectedNode, $expectedScript) {
+  if (-not $process -or $process.ExecutablePath -ine $expectedNode) { return $false }
+  # This launcher starts Node with its absolute main script as the first argument.
+  # A matching path in another script's arguments is not proof of ownership.
+  $main = [regex]::Match([string]$process.CommandLine, '^\s*(?:"[^"]+"|[^\s"]+)\s+(?:"(?<script>[^"]+)"|(?<script>[^\s"]+))(?=\s|$)')
+  return $main.Success -and $main.Groups['script'].Value.Equals($expectedScript, [StringComparison]::OrdinalIgnoreCase)
 }
 function Show-GameStatus($profile) {
   $health = Get-GameHealth $profile
@@ -42,6 +62,8 @@ function Show-GameStatus($profile) {
     Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
       Where-Object { $_.IPAddress -match '^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)' } |
       ForEach-Object { Write-Host "LAN: http://$($_.IPAddress):$($profile.Port) ($($_.InterfaceAlias))" }
+  } elseif (@(Get-NetTCPConnection -LocalPort $profile.Port -State Listen -ErrorAction SilentlyContinue).Count -gt 0) {
+    Write-Host "$($profile.Id): port $($profile.Port) is occupied by an original, another checkout, old code or another application. Stop it in its original window or choose different ports." -ForegroundColor Yellow
   } else { Write-Host "$($profile.Id): stopped" }
 }
 
@@ -61,7 +83,7 @@ if ($Action -eq 'Stop') {
     $savedProcess = Get-Content -LiteralPath $profile.State -Raw | ConvertFrom-Json
     $serverProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$([int]$savedProcess.ProcessId)" -ErrorAction SilentlyContinue
     if ($serverProcess) {
-      if ($serverProcess.ExecutablePath -ine $nodeExe -or $serverProcess.CommandLine.IndexOf($serverScript,[StringComparison]::OrdinalIgnoreCase) -lt 0) {
+      if (-not (Test-OwnedServerProcess $serverProcess $nodeExe $serverScript)) {
         throw 'Saved process no longer belongs to this game. Refusing to stop a different application.'
       }
       Stop-Process -Id $serverProcess.ProcessId -ErrorAction Stop
@@ -72,12 +94,20 @@ if ($Action -eq 'Stop') {
   exit 0
 }
 
+# Check both ports before preparation; never silently reuse an unmodified original server.
+foreach ($profile in $profiles) {
+  if (-not (Get-GameHealth $profile) -and @(Get-NetTCPConnection -LocalPort $profile.Port -State Listen -ErrorAction SilentlyContinue).Count -gt 0) {
+    throw "Port $($profile.Port) is occupied by an original server, another checkout, old code or another application. Stop it in its original window, or run npm run start:plus -- --port 4000 --legacy-port 4001."
+  }
+}
 & $nodeExe tools\setup.mjs --no-local --quiet
 if ($LASTEXITCODE -ne 0) { throw 'Game preparation failed.' }
 foreach ($manifest in @('assets.json','emotes.json','local-assets.json')) {
   $sourceManifest = Join-Path $gameRoot "data\$manifest"
   if (Test-Path -LiteralPath $sourceManifest) { Copy-Item -LiteralPath $sourceManifest -Destination (Join-Path $gameRoot "data\legacy\$manifest") -Force }
 }
+$expectedInstance = (& $nodeExe (Join-Path $gameRoot 'tools\instance-id.mjs')) | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) { throw 'Unable to identify the prepared wei_plus checkout.' }
 New-Item -ItemType Directory -Path $stateDir,$logDir -Force | Out-Null
 foreach ($profile in $profiles) {
   if (-not (Test-Path -LiteralPath (Join-Path $profile.Data 'config.json'))) { throw "Game data is missing: $($profile.Data)" }
@@ -86,6 +116,7 @@ foreach ($profile in $profiles) {
     $env:PORT = [string]$profile.Port
     $env:SP_DATA_DIR = $profile.Data
     $env:SP_ALTERNATE_PORT = [string]$profile.OtherPort
+    $env:SP_ALTERNATE_URL = [string]$alternateUrls.($profile.Id)
     $logStamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
     $stdoutLog = Join-Path $logDir "$($profile.Id)-$logStamp.log"
     $stderrLog = Join-Path $logDir "$($profile.Id)-$logStamp.err.log"

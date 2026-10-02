@@ -84,7 +84,9 @@ function canListen(port, host) {
 
 /** 'ours' (our server answers /healthz), 'free', 'busy' (another program) or 'denied'. */
 export async function probePort(port, host = '0.0.0.0') {
-  const r = await getJson(`http://127.0.0.1:${port}/healthz`);
+  const target = ['0.0.0.0', '::', ''].includes(host) ? '127.0.0.1' : host;
+  const authority = target.includes(':') ? `[${target}]` : target;
+  const r = await getJson(`http://${authority}:${port}/healthz`);
   if (r.json && r.json.ok === true && 'uptimeSec' in r.json) return { state: 'ours', health: r.json };
   const l = await canListen(port, host);
   if (l.ok) return { state: 'free' };

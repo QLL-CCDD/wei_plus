@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { checkNode, checkData } from './setup.mjs';
 import { probePort, classifyAddresses } from './doctor.mjs';
+import { getInstanceIdentity, isSameServer, normalizeAlternateUrl } from '../server/instance.js';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const ports = [Number(process.env.SP_CURRENT_PORT || 3000), Number(process.env.SP_LEGACY_PORT || 3001)];
 const setupArgs = [];
@@ -32,10 +33,16 @@ for (let i = 2; i < process.argv.length; i++) {
 if (!checkNode().ok) throw new Error('需要 Node.js 22/24：https://nodejs.org/zh-cn/download');
 if (ports.some((p) => !Number.isInteger(p) || p < 1 || p > 65535) || ports[0] === ports[1]) throw new Error('Choose two distinct valid ports');
 const ids = ['current', 'legacy'];
+const alternateUrls = [process.env.SP_CURRENT_ALTERNATE_URL, process.env.SP_LEGACY_ALTERNATE_URL].map(normalizeAlternateUrl);
+if (process.env.SP_ALTERNATE_URL) console.warn('双版启动请分别使用 SP_CURRENT_ALTERNATE_URL / SP_LEGACY_ALTERNATE_URL；SP_ALTERNATE_URL 仅用于单版启动，本次忽略。');
+let expectedInstance = getInstanceIdentity(root);
+const listenHost = process.env.HOST || '0.0.0.0';
+const wildcardHost = ['0.0.0.0', '::'].includes(listenHost);
+const displayHost = wildcardHost ? 'localhost' : listenHost.includes(':') ? `[${listenHost}]` : listenHost;
 const probes = await Promise.all(ports.map((port) => probePort(port, process.env.HOST || '0.0.0.0')));
 for (const [i, probe] of probes.entries()) {
-  if (probe.state !== 'free' && !(probe.state === 'ours' && (probe.health.ruleset || 'current') === ids[i])) {
-    throw new Error(`端口 ${ports[i]} 已被其他程序或另一版本占用，请使用 --port / --legacy-port 换端口。`);
+  if (probe.state !== 'free' && !(probe.state === 'ours' && isSameServer(probe.health, expectedInstance, ids[i], ports[1-i], listenHost, alternateUrls[i]))) {
+    throw new Error(`端口 ${ports[i]} 已被原版、其他目录、旧代码/配置服务或其他程序占用。请先在原窗口停止它，或使用 --port / --legacy-port 换端口。`);
   }
 }
 if (prepare && probes.some((probe) => probe.state === 'free')) {
@@ -50,6 +57,13 @@ for (const name of ['assets.json', 'emotes.json', 'local-assets.json']) {
 }
 const legacy = checkData(join(root, 'data/legacy'));
 if (!legacy.ok) throw new Error(`旧版数据不完整，请重新下载仓库（缺少 ${legacy.missing.join(', ')}；无法解析 ${legacy.broken.join(', ')}）。`);
+// Setup may repair core tables. Compute the final expected identity once before spawning.
+expectedInstance = getInstanceIdentity(root);
+for (const [i, probe] of probes.entries()) {
+  if (probe.state === 'ours' && !isSameServer(probe.health, expectedInstance, ids[i], ports[1-i], listenHost, alternateUrls[i])) {
+    throw new Error(`准备过程更新了规则或代码，请先在原窗口停止端口 ${ports[i]} 的旧服务后重新启动。`);
+  }
+}
 const children = [];
 let stopping = false;
 const stop = (code = 0) => {
@@ -59,11 +73,11 @@ const stop = (code = 0) => {
   process.exitCode = code;
 };
 for (const [i, id] of ids.entries()) {
-  console.log(`${id === 'legacy' ? '旧版' : '当前版'}: http://localhost:${ports[i]}`);
+  console.log(`${id === 'legacy' ? '旧版' : '当前版'}: http://${displayHost}:${ports[i]}`);
   if (probes[i].state === 'ours') continue;
   const child = spawn(process.execPath, [join(root,'server/index.js')], {
     cwd:root, stdio:'inherit', windowsHide:true,
-    env:{...process.env, PORT:String(ports[i]), SP_ALTERNATE_PORT:String(ports[1-i]),
+    env:{...process.env, PORT:String(ports[i]), SP_ALTERNATE_PORT:String(ports[1-i]), SP_ALTERNATE_URL:alternateUrls[i] || '',
       SP_DATA_DIR:join(root,'data',...(id==='legacy'?['legacy']:[]))},
   });
   children.push(child);
@@ -76,20 +90,20 @@ if (children.length) {
   const deadline = Date.now() + 30000;
   let ready = false;
   while (!stopping && Date.now() < deadline) {
-    const health = await Promise.all(ports.map((port) => probePort(port)));
-    ready = health.every((probe, i) => probe.state === 'ours' && (probe.health.ruleset || 'current') === ids[i]);
+    const health = await Promise.all(ports.map((port) => probePort(port, listenHost)));
+    ready = health.every((probe, i) => probe.state === 'ours' && isSameServer(probe.health, expectedInstance, ids[i], ports[1-i], listenHost, alternateUrls[i]));
     if (ready) break;
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
   if (!ready) { console.error('服务器未能启动，请查看上面的错误信息。'); stop(1); }
 }
 if (!stopping) {
-  for (const address of classifyAddresses().filter((a) => ['lan', 'vpn', 'public'].includes(a.kind))) {
+  for (const address of classifyAddresses().filter((a) => ['lan', 'vpn', 'public'].includes(a.kind) && (wildcardHost || a.address === listenHost))) {
     console.log(`联机地址: http://${address.address}:${ports[0]} / http://${address.address}:${ports[1]}`);
   }
   console.log('登录页与大厅可切换版本。关闭窗口或 Ctrl+C 停止本窗口启动的服务器。');
   if (open) {
-    const url = `http://localhost:${ports[0]}`;
+    const url = `http://${displayHost}:${ports[0]}`;
     const platform = process.platform;
     const cmd = platform === 'win32' ? 'rundll32' : platform === 'darwin' ? 'open' : 'xdg-open';
     if (platform !== 'linux' || process.env.DISPLAY || process.env.WAYLAND_DISPLAY) {

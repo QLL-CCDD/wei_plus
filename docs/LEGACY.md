@@ -11,7 +11,8 @@ Node.js 22/24：运行 `npm run start:plus`，自动安装依赖、下载素材�
 - 登录页和大厅提供切换按钮。版本之间的房间独立；联机时分享该版本的邀请链接。
 - 旧版卡池 115 名、策略 40 个，难度为标准、险境、绝境。新增的铃兰、杰西卡、缪尔赛思、芬策略保留，其余 36 个策略使用更新前的效果。
 - Windows 本机整合安装可使用 `scripts/manage-versions.ps1 -Action Start -Ruleset legacy -OpenBrowser`。该脚本优先使用整合包旁边的便携 Node.js，找不到时使用系统安装的 Node.js。
-- 局域网使用本机实际 IPv4 地址，分别访问 3000/3001 端口。Windows 的 `scripts/configure-local-network.ps1` 可由用户以管理员运行，放行本项目 Node.js 的两个端口，来源限制为 LocalSubnet。
+- 局域网使用开服电脑的实际 IPv4 地址，分别访问 3000/3001 端口。所有玩家连接同一台服务器和同一个版本；localhost 页面复制的邀请优先使用局域网地址。Windows 可先运行 `scripts/repair-local-network.ps1` 只读诊断，再由用户在管理员 PowerShell 中加 `-Apply` 放行两个端口，并从匹配的 TCP 阻止规则中去除游戏端口、保留其他端口限制，来源限制为 LocalSubnet，修改前自动备份。
+- 更新后先停止服务再启动。启动器不会复用原版、其他目录或旧代码服务；端口占用时请停止原服务或换端口。公网代理的两个版本分别配置入口：双版启动器使用 `SP_CURRENT_ALTERNATE_URL` 指向旧版、`SP_LEGACY_ALTERNATE_URL` 指向当前版；单服务器使用 `SP_ALTERNATE_URL` 设置另一版本的网址。
 
 ## 数据基准与重建
 
