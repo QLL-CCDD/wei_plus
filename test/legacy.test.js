@@ -63,6 +63,18 @@ test('legacy keeps historical strategy effects and all four new strategies', () 
   assert.equal(current.garrisons[byName(current,'断崖').garrisonIds[0]].bbStr.dir,'behind');
 });
 
+test('new Suzuran strategy triggers the historical Tin Man acquisition trait in a legacy match', () => {
+  const h=makeMatch({data:legacy,mode:'solo',difficulty:'NORMAL',fake:true,registry:createRegistry()}).start();h.toPrep(1);
+  const m=h.m,ps=h.ps('p_0');
+  ps.board.clear();ps.bandId='band_lisa';
+  give(m,ps,byName(legacy,'锡人').chessId,'board',[10,3]);
+  const before=ps.layers.investShip||0;
+  m.dispatch(ps,'onRoundStart',{round:1});
+  assert.equal(ps.layers.investShip,before+2);
+  assert.equal(m.dispatcher.errors,0);
+  m.dispose();
+});
+
 test('Chen actually restricts weakness damage to high-ground operators in legacy; current still includes ground operators', () => {
   for (const [d, ranged, expected] of [[legacy,false,100],[legacy,true,1000],[current,false,1000],[current,true,1000]]) {
     setGameData(d);
