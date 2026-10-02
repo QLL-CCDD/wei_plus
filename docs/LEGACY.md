@@ -4,13 +4,13 @@
 
 ## 启动与切换
 
-Node.js 22/24：`npm ci` → `npm run setup` → `npm run start:plus`。
+Node.js 22/24：运行 `npm run start:plus`，自动安装依赖、下载素材并启动两个版本。Windows 可直接双击根目录 `开始游戏.bat`，macOS / Linux 可运行 `bash scripts/start.sh`。旧版数据已提供，首次安装不需要重建。
 
 - 当前版：<http://localhost:3000>。
 - 旧版：<http://localhost:3001>。
 - 登录页和大厅提供切换按钮。版本之间的房间独立；联机时分享该版本的邀请链接。
 - 旧版卡池 115 名、策略 40 个，难度为标准、险境、绝境。新增的铃兰、杰西卡、缪尔赛思、芬策略保留，其余 36 个策略使用更新前的效果。
-- Windows 本机整合安装可使用 `scripts/manage-versions.ps1 -Action Start -Ruleset legacy -OpenBrowser`。该脚本优先使用整合包旁边的便携 Node.js。
+- Windows 本机整合安装可使用 `scripts/manage-versions.ps1 -Action Start -Ruleset legacy -OpenBrowser`。该脚本优先使用整合包旁边的便携 Node.js，找不到时使用系统安装的 Node.js。
 - 局域网使用本机实际 IPv4 地址，分别访问 3000/3001 端口。Windows 的 `scripts/configure-local-network.ps1` 可由用户以管理员运行，放行本项目 Node.js 的两个端口，来源限制为 LocalSubnet。
 
 ## 数据基准与重建

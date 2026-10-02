@@ -12,6 +12,7 @@
 // (0 = best), then by closeness to the best value, then title order, then seat; greedy assignment gives each player
 // ≤ 1 title and uses each title ≤ once (config.titleRule [ASSUMED]).
 
+import { randomUUID } from 'node:crypto';
 import { bondList } from './bondsMeta.js';
 import { boardOrder } from './board.js';
 
@@ -127,6 +128,10 @@ export function buildResult(m, outcome) {
   });
   return {
     t: 'm.result',
+    matchId: m.resultId ||= randomUUID(),
+    endedAt: m.resultEndedAt ||= Date.now(),
+    rulesetId: gd.config.ruleset?.id || 'current',
+    rulesetName: gd.config.ruleset?.name || '卫戍协议：盟约',
     victory,
     roundsPassed: teamRounds,
     hiddenReached,

@@ -2,7 +2,19 @@
 
 本仓库 `wei_plus` 基于 [sganggs/Stronghold-Protocol](https://github.com/sganggs/Stronghold-Protocol) v0.1.0，新增可切换的 **卫戍协议旧版**：以 2026 年 3 月 27 日更新前的二期下半规则为基础，同时保留铃兰、杰西卡、缪尔赛思、芬四个新增策略。原作者、原许可证和素材声明保留。
 
-装好 Node.js 22/24 后运行 `npm ci`、`npm run setup`、`npm run start:plus`。当前版为 <http://localhost:3000>，旧版为 <http://localhost:3001>，登录页与大厅有版本切换按钮。两个版本各自创建房间，邀请链接会带对应端口。旧版数据已随源码提供，可用 `npm run build-legacy-data` 从固定历史快照重建。
+安装 Node.js 22/24 后，**Windows 双击根目录的 `开始游戏.bat`，macOS / Linux 运行 `bash scripts/start.sh`，或任意平台运行 `npm run start:plus`**。首次自动安装依赖、下载素材并打开浏览器；后续运行会补全缺失文件。当前版为 <http://localhost:3000>，旧版为 <http://localhost:3001>，登录页与大厅有版本切换按钮。两个版本各自创建房间，邀请链接会带对应端口。旧版数据已随源码提供，安装时不需要下载历史快照或重建。
+
+```bash
+git clone https://github.com/QLL-CCDD/wei_plus.git
+cd wei_plus
+npm run start:plus
+```
+
+本仓库为私有仓库，需要仓库访问权限才能克隆；也可下载源码 ZIP 后解压。首次准备需要联网，约下载 250 MB 素材；中断后重复启动即可续传。缺少素材时会明确提示并使用占位图，可用 `npm run setup -- --no-local` 重新补全。没有明日方舟 PC 客户端也能正常使用 2D 棋盘。按 `Ctrl+C` 或关闭启动窗口停止服务。只启动当前版可用 `npm start`。
+
+可选参数：`npm run start:plus -- --no-open` 不打开浏览器；`--port 4000 --legacy-port 4001` 更换两个端口；`--no-local` 跳过本机客户端美术提取。局域网联机需要允许两个端口通过防火墙。
+
+**战绩与备份：**大厅的战绩入口显示总局数、胜场、奖杯、各盟约与策略胜场及对战历史，可导出/导入 JSON 备份。记录保存在当前浏览器的 `localStorage`（键 `sp.records.v1`），按稳定的模式 ID 分开统计；更新仓库、重新安装依赖或以后增加一期模式不会清零现有记录。当前版与旧版使用不同端口，属于不同浏览器存储空间。更换浏览器、网址或端口，以及清理浏览器数据前，请先导出备份，之后再导入恢复或合并。战绩从此功能启用后开始记录，原程序未保存的历史无法补回。
 
 旧版规则、改动名录与验证说明见 [docs/LEGACY.md](docs/LEGACY.md)。下面保留上游的使用说明。
 
@@ -83,14 +95,12 @@ English summary: [below](#english).
 ### 方式二：从源码运行
 
 ```bash
-git clone https://github.com/sganggs/Stronghold-Protocol.git
-cd Stronghold-Protocol
-npm install        # 安装依赖（postinstall 会把 pixi / preact / three 复制到 public/vendor）
-npm run setup      # 检查环境，并从公开镜像下载约 250 MB 美术 / 音频（可中断，再次运行会续传）
-npm start          # 启动服务器：http://localhost:3000
+git clone https://github.com/QLL-CCDD/wei_plus.git
+cd wei_plus
+npm run start:plus # 自动安装依赖、下载素材、启动当前版 3000 / 旧版 3001 并打开浏览器
 ```
 
-也可以直接运行启动脚本（Windows `scripts\start-windows.bat`，macOS / Linux `scripts/start.sh`）：首次会自动安装依赖、下载素材，然后启动服务器并打开浏览器。
+也可以直接运行启动脚本（Windows 双击根目录 `开始游戏.bat`，macOS / Linux `bash scripts/start.sh`）：首次会自动安装依赖、下载素材，然后启动两个版本并打开浏览器。已随仓库提供的旧版规则不会在安装时重建。
 
 - **官方 3D 棋盘**需要从本机的《明日方舟》PC 客户端提取贴图（Windows 原生客户端、macOS 的 CrossOver 或 PlayCover）。`npm run setup` 检测到客户端时会询问是否提取（需要 Python 3.8+，依赖装在项目内的 `.venv-extract`，不影响系统）；之后可以用 `node tools/setup.mjs --local` 重新提取，或用 `--game "<…/StreamingAssets/AB/Windows>"` 指定路径。没有客户端时自动使用 2D 棋盘，其他功能不受影响。
 - 素材下载优先使用 GitHub，失败时自动改用 jsDelivr 镜像。

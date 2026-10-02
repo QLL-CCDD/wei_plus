@@ -17,6 +17,7 @@ import { net, identity } from '../net.js';
 import { store, useStore, shallowEqual, loadPref, savePref } from '../store.js';
 import { getConfig, getMode, getStage, useData } from '../data.js';
 import { RulesetPicker, availableDifficulties } from '../ruleset.js';
+import { RecordsButton } from '../ui/records.js';
 
 /** Official mode texts (activity_table act2autochess.modeDataDict), fallback when config.json is absent. */
 export const MODE_TEXT = {
@@ -269,6 +270,7 @@ export function LobbyScreen() {
         <h1 class="topbar__title">选择模拟协议</h1>
       </div>
       <div class="topbar__right">
+        <${RecordsButton} />
         <${GuideButton} class="lobby-guide" variant="secondary" />
         <${LoadoutButton} from="lobby" size="sm" class="lobby-loadout" />
         <div class="me-chip">

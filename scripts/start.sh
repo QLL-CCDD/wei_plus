@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 卫戍协议：盟约 · macOS / Linux start script. Docs: docs/DEPLOY.md
-#   scripts/start.sh [--port 3001] [--no-open] [--no-local] [--no-assets] …   (arguments go to scripts/launch.mjs)
-# Checks Node.js ≥ 22, runs `npm ci` on the first run, then scripts/launch.mjs (tools/setup.mjs → server → browser).
+#   scripts/start.sh [--port 4000] [--legacy-port 4001] [--no-open] [--no-local] [--no-assets] …
+# Checks Node.js ≥ 22, then tools/start-versions.mjs prepares and starts both versions and opens the browser.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -19,9 +19,4 @@ if ! node -e "process.exit(Number(process.versions.node.split('.')[0])>=22?0:1)"
   exit 1
 fi
 
-if [ ! -f node_modules/ws/package.json ]; then
-  echo "[首次运行] 正在安装依赖 npm ci …"
-  npm ci --no-audit --no-fund || npm install --no-audit --no-fund
-fi
-
-exec node scripts/launch.mjs "$@"
+exec node tools/start-versions.mjs "$@"

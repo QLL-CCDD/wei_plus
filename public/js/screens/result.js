@@ -18,6 +18,7 @@ import { normalizeResult, fmtNum } from '../ui/gameLogic.js';
 import { enemyIconUrl, titleIconUrl, uiUrl } from '../ui/assetUrls.js';
 import { store, useStore, emptyMatch } from '../store.js';
 import { audio } from '../audio.js';
+import { RecordsButton } from '../ui/records.js';
 
 const cx = (...p) => p.flat().filter(Boolean).join(' ');
 
@@ -114,6 +115,7 @@ export function ResultScreen() {
         </div>
         ${mins ? html`<p class="result__time t-lo">本局耗时 <b class="num">${mins}</b> 分钟</p>` : null}
         <footer class="result__foot">
+          <${RecordsButton} size="lg" />
           <${Button} variant="primary" size="xl" icon="chevronLeft" onClick=${back}>${hasRoom ? '返回同盟' : '返回大厅'}<//>
         </footer>
       </section>
@@ -125,4 +127,3 @@ export function ResultScreen() {
     </main>
   </div>`;
 }
-

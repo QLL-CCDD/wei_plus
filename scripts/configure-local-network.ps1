@@ -2,6 +2,10 @@ $ErrorActionPreference = 'Stop'
 $gameRoot = Split-Path -Parent $PSScriptRoot
 $outputsRoot = Split-Path -Parent $gameRoot
 $nodeExe = Join-Path $outputsRoot 'runtime\node-v24.21.0-win-x64\node.exe'
+if (-not (Test-Path -LiteralPath $nodeExe)) {
+  $systemNode = Get-Command node.exe -ErrorAction SilentlyContinue
+  if ($systemNode) { $nodeExe = $systemNode.Source }
+}
 $stateDir = Join-Path $gameRoot '.local'
 New-Item -ItemType Directory -Path $stateDir -Force | Out-Null
 $resultFile = Join-Path $stateDir 'network-configuration.json'

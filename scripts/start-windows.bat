@@ -2,7 +2,7 @@
 rem Stronghold Protocol - double-click to start (Windows). Docs: docs\DEPLOY.md
 rem Checks Node.js, installs dependencies on the first run, runs tools\setup.mjs (art download / resume),
 rem starts the server, prints the LAN addresses and opens the browser. Extra arguments are passed to
-rem scripts\launch.mjs, e.g.:  start-windows.bat --port 3001 --no-local
+rem tools\start-versions.mjs, e.g.: start-windows.bat --port 4000 --legacy-port 4001 --no-local
 chcp 65001 >nul
 setlocal EnableExtensions
 title 卫戍协议：盟约 - Stronghold Protocol
@@ -14,13 +14,7 @@ if errorlevel 1 goto :nonode
 node -e "process.exit(Number(process.versions.node.split('.')[0])>=22?0:1)"
 if errorlevel 1 goto :oldnode
 
-if not exist "node_modules\ws\package.json" (
-  echo [首次运行] 正在安装依赖 npm ci ...
-  call npm ci --no-audit --no-fund || call npm install --no-audit --no-fund
-  if errorlevel 1 goto :fail
-)
-
-node scripts\launch.mjs %*
+node tools\start-versions.mjs %*
 if errorlevel 1 goto :fail
 exit /b 0
 

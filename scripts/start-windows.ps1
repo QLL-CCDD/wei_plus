@@ -4,7 +4,7 @@
         powershell -ExecutionPolicy Bypass -File scripts\start-windows.ps1 [-Port 3001] [launch.mjs 的其他参数]
   检查 Node.js（没有时可用 winget 安装）→ 首次运行 npm ci → tools\setup.mjs → 启动服务器并打开浏览器。
 #>
-# PositionalBinding off: a bare launch.mjs option (.\start-windows.ps1 --no-local) must land in $Rest, not in [int]$Port.
+# PositionalBinding off: a bare option (.\start-windows.ps1 --no-local) must land in $Rest, not in [int]$Port.
 [CmdletBinding(PositionalBinding = $false)]
 param(
   [int]$Port = 0,
@@ -54,16 +54,7 @@ if ($node.Major -lt 22) {
   Pause-Exit 1
 }
 
-if (-not (Test-Path (Join-Path $Root 'node_modules\ws\package.json'))) {
-  Write-Host '[首次运行] 正在安装依赖 npm ci ...' -ForegroundColor Cyan
-  & npm.cmd ci --no-audit --no-fund
-  if ($LASTEXITCODE -ne 0) {
-    & npm.cmd install --no-audit --no-fund
-    if ($LASTEXITCODE -ne 0) { Write-Host 'npm 安装依赖失败（网络？）。' -ForegroundColor Red; Pause-Exit 1 }
-  }
-}
-
-$launchArgs = @('scripts\launch.mjs')
+$launchArgs = @('tools\start-versions.mjs')
 if ($Port -gt 0) { $launchArgs += @('--port', "$Port") }
 if ($Rest) { $launchArgs += $Rest }
 & node @launchArgs

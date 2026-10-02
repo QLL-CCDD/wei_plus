@@ -96,6 +96,10 @@ export function capture(cmd, args, { timeout = 15000, shell = false, env } = {})
 function npmCommand() {
   const execPath = process.env.npm_execpath; // set when started through `npm run …`
   if (execPath && /npm-cli\.js$/i.test(execPath) && exists(execPath)) return { cmd: process.execPath, pre: [execPath], shell: false };
+  const nodeDir = path.dirname(process.execPath);
+  for (const cli of [path.join(nodeDir, 'node_modules/npm/bin/npm-cli.js'), path.join(nodeDir, '../lib/node_modules/npm/bin/npm-cli.js')]) {
+    if (exists(cli)) return { cmd: process.execPath, pre: [cli], shell: false };
+  }
   return { cmd: IS_WIN ? 'npm.cmd' : 'npm', pre: [], shell: IS_WIN };
 }
 
@@ -151,11 +155,11 @@ export function checkVendor() {
 }
 
 /** data/*.json present and parseable? */
-export function checkData() {
+export function checkData(dir = path.join(ROOT, 'data')) {
   const missing = [];
   const broken = [];
   for (const name of DATA_FILES) {
-    const p = path.join(ROOT, 'data', `${name}.json`);
+    const p = path.join(dir, `${name}.json`);
     if (!exists(p)) { missing.push(name); continue; }
     if (readJson(p) == null) broken.push(name);
   }
@@ -469,7 +473,7 @@ async function main() {
     return 1;
   }
   if (!opts.quiet) {
-    log(`\n${c.ok('可以开始了：')} npm start   ${c.dim('（Windows 可直接双击 scripts\\start-windows.bat）')}`);
+    log(`\n${c.ok('可以开始了：')} npm run start:plus   ${c.dim('（Windows 可直接双击 开始游戏.bat）')}`);
     log(c.dim('浏览器打开 http://localhost:3000 ；同一局域网的朋友用终端里打印的 LAN 地址。'));
   }
   return 0;

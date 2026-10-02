@@ -15,7 +15,13 @@ $profiles = @(
   @{ Id='current'; Port=3000; OtherPort=3001; Data=(Join-Path $gameRoot 'data'); State=(Join-Path $stateDir 'server-process.json') },
   @{ Id='legacy'; Port=3001; OtherPort=3000; Data=(Join-Path $gameRoot 'data\legacy'); State=(Join-Path $stateDir 'server-process-legacy.json') }
 )
-$env:Path = $nodeDir + ';' + $env:Path
+if (Test-Path -LiteralPath $nodeExe) {
+  $env:Path = $nodeDir + ';' + $env:Path
+} else {
+  $systemNode = Get-Command node.exe -ErrorAction SilentlyContinue
+  if (-not $systemNode) { throw 'Install Node.js 22/24 first: https://nodejs.org/zh-cn/download' }
+  $nodeExe = $systemNode.Source
+}
 $env:HOST = '0.0.0.0'
 $env:SP_COMBAT = 'client'
 $env:SP_VERIFY = 'off'
@@ -68,6 +74,10 @@ if ($Action -eq 'Stop') {
 
 & $nodeExe tools\setup.mjs --no-local --quiet
 if ($LASTEXITCODE -ne 0) { throw 'Game preparation failed.' }
+foreach ($manifest in @('assets.json','emotes.json','local-assets.json')) {
+  $sourceManifest = Join-Path $gameRoot "data\$manifest"
+  if (Test-Path -LiteralPath $sourceManifest) { Copy-Item -LiteralPath $sourceManifest -Destination (Join-Path $gameRoot "data\legacy\$manifest") -Force }
+}
 New-Item -ItemType Directory -Path $stateDir,$logDir -Force | Out-Null
 foreach ($profile in $profiles) {
   if (-not (Test-Path -LiteralPath (Join-Path $profile.Data 'config.json'))) { throw "Game data is missing: $($profile.Data)" }

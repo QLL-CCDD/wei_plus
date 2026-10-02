@@ -45,6 +45,8 @@ import { GuideHost } from './ui/guide.js';
 import { installDeviceSupport } from './ui/device.js';
 import { LoadoutHost } from './screens/loadout.js';
 import { installLoadoutSync } from './ui/loadoutSync.js';
+import { recordResult } from './records.js';
+import { RecordsHost } from './ui/records.js';
 
 const RESTORE_GRACE_MS = 1500;
 const JOIN_DELAY_MS = 350;
@@ -210,7 +212,11 @@ function wireNet() {
   net.on('m.public', (msg) => { matchAt = Date.now(); store.patch('match', { public: payload(msg) }); maybeFinishRestore(); });
   net.on('m.private', (msg) => { matchAt = Date.now(); store.patch('match', { private: payload(msg) }); });
   net.on('m.field', (msg) => store.patch('match', { field: payload(msg) }));
-  net.on('m.result', (msg) => store.patch('match', { result: payload(msg) }));
+  net.on('m.result', (msg) => {
+    store.patch('match', { result: payload(msg) });
+    try { if (recordResult(msg, store.get().me.playerId)) window.dispatchEvent(new Event('sp-records-updated')); }
+    catch (err) { toast(`战绩未保存：${err.message}，请检查浏览器存储空间`, 'warn', { ttl: 8000 }); }
+  });
   net.on('m.toast', (msg) => {
     const kind = ['info', 'success', 'warn', 'error'].includes(msg.kind) ? msg.kind : 'info';
     toast(msg.text, kind);
@@ -269,6 +275,7 @@ function App() {
     <${UiHosts} />
     <${GuideHost} />
     <${LoadoutHost} />
+    <${RecordsHost} />
   </div>`;
 }
 
